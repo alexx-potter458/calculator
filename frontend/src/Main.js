@@ -3,6 +3,8 @@ import { useState } from "react";
 const Main = () => {
     const [theme, setTheme] = useState('dark-theme')
     const [themeType, setThemeType] = useState('Dark')
+    const [smallPrint, setSmallPrint] = useState('')
+    const [bigPrint, setBigPrint] = useState('')
 
     const changeTheme = () => {
         if(theme === 'dark-theme') {
@@ -12,8 +14,57 @@ const Main = () => {
         else {
             setTheme('dark-theme');
             setThemeType('Dark');
-
         }
+    }
+
+    const pressKey = (key) => {
+        if("+-*/".includes(key))
+            setBigPrint(bigPrint + ` ${key} `)
+        else
+            setBigPrint(bigPrint + key)
+    }
+
+    const deleteAll = () => {
+        setBigPrint('');
+        setSmallPrint('')
+    }
+
+    const deleteLast = () => {
+        if(bigPrint.endsWith(' '))
+            setBigPrint(bigPrint.slice(0, -3))
+        else
+            setBigPrint(bigPrint.slice(0, -1))
+    }
+
+    const equal = async () => {
+
+        if(bigPrint === 'Calculating...')
+            return;
+
+        let data = JSON.stringify({expression: bigPrint })
+
+        setSmallPrint(bigPrint)
+        setBigPrint('Calculating...')
+
+        let result = (await fetch('http://localhost:4000/calculator', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })).json()
+
+        result.then( res => {
+            console.log(typeof(res));
+            if(typeof(res) === 'number')
+                setBigPrint(`${res}`)
+            else {
+                deleteAll();
+                setSmallPrint('Ai gresit ecuatia!')
+            }
+        })
+       
     }
 
     return (
@@ -32,38 +83,38 @@ const Main = () => {
             
             <div className="calculator-display">
                 <div className="equation">
-                    78 x 26 - 6
+                    {smallPrint}
                 </div>
                 <div className="result">
-                    2,022
+                    {bigPrint}
                 </div>
             </div>
 
-            <label class="switch">
+            <label className="switch">
                 <input type="checkbox" onClick={changeTheme} />
-                <span class="slider round"></span>
+                <span className="slider round"></span>
             </label>
 
-            <div class="keyboard">
-                <button class="div1"> 1</button>
-                <button class="div2">2 </button>
-                <button class="div3">3 </button>
-                <button class="div4">4 </button>
-                <button class="div5">5 </button>
-                <button class="div6">6 </button>
-                <button class="div7">7 </button>
-                <button class="div8">8</button>
-                <button class="div9">9</button>
-                <button class="div10">0</button>
-                <button class="div11">+</button>
-                <button class="div12">-</button>
-                <button class="div13">X</button>
-                <button class="div14">/</button>
-                <button class="div15">DEL</button>
-                <button class="div16">AC</button>
-                <button class="div17">.</button>
-                <button class="div18">%</button>
-                <button class="div19">=</button>
+            <div className="keyboard">
+                <button className="div1" onClick={ ()=> pressKey(1)}>1</button>
+                <button className="div2"onClick={ ()=> pressKey(2)}>2</button>
+                <button className="div3" onClick={ ()=> pressKey(3)}>3</button>
+                <button className="div4" onClick={ ()=> pressKey(4)} >4</button>
+                <button className="div5" onClick={ ()=> pressKey(5)} >5</button>
+                <button className="div6" onClick={ ()=> pressKey(6)} >6</button>
+                <button className="div7" onClick={ ()=> pressKey(7)} >7</button>
+                <button className="div8" onClick={ ()=> pressKey(8)} >8</button>
+                <button className="div9" onClick={ ()=> pressKey(9)} >9</button>
+                <button className="div10" onClick={ ()=> pressKey(0)} >0</button>
+                <button className="div11" onClick={ ()=> pressKey('+')} >+</button>
+                <button className="div12" onClick={ ()=> pressKey('-')} >-</button>
+                <button className="div13" onClick={ ()=> pressKey('*')} >X</button>
+                <button className="div14" onClick={ ()=> pressKey('/')} >/</button>
+                <button className="div15" onClick={ deleteLast } >DEL</button>
+                <button className="div16" onClick={ deleteAll } >AC</button>
+                <button className="div17" onClick={ ()=> pressKey('(')} >{'('}</button>
+                <button className="div18" onClick={ ()=> pressKey(')')} >{')'}</button>
+                <button className="div19" onClick={ equal } >=</button>
             </div>
         </div>
     );
