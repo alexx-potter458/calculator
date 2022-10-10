@@ -11,7 +11,7 @@ export class AppService {
     const result = await axios.post('http://backend:4000/calculator', {
       expression,
     });
-
+    console.log('ii transmit');
     return result.data;
   }
 }
