@@ -4,9 +4,17 @@ services:
         container_name: app
         image: calculator-app
         ports:
-            - "3000:3000"
+            - "3000:80"
     backend:
         container_name: api
         image: calculator-api
         ports:
             - "4000:4000"
+    middle:
+        container_name: middle
+        image: calculator-middle
+        ports:
+            - "5000:5000"
+        links:
+            - backend:4000
+        

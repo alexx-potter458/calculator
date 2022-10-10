@@ -46,7 +46,7 @@ const Main = () => {
         setSmallPrint(bigPrint)
         setBigPrint('Calculating...')
 
-        let result = (await fetch('http://localhost:4000/calculator', {
+        let result = (await fetch('http://localhost:5000', {
             method: 'POST',
             mode: 'cors',
             headers: {
