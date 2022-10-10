@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
+import { EquationDto } from './dto/equation.dto';
+
 
 @Controller()
 export class AppController {
@@ -8,5 +10,10 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post()
+  getCalculator(@Body() equationDto: EquationDto): Promise<string> {
+    return this.appService.calculator(equationDto.expression);
   }
 }
