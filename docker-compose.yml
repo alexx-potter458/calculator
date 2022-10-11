@@ -1,20 +1,24 @@
 version: "3"
 services:
-    frontend:
-        container_name: app
-        image: calculator-app
-        ports:
-            - "3000:80"
     backend:
         container_name: api
-        image: calculator-api
+        image: api
         ports:
             - "4000:4000"
     middle:
         container_name: middle
-        image: calculator-middle
+        image: middle
         ports:
             - "5000:5000"
         links:
             - backend:4000
+        depends_on:
+            - backend
+    frontend:
+        container_name: app
+        image: app
+        ports:
+            - "3000:80"
+        depends_on:
+            - middle
         
